@@ -7,6 +7,7 @@ import config
 import operator
 import csv
 
+
 class application(QtGui.QApplication):
 	def __init__(self, data, headers):
 		super(application, self).__init__(sys.argv)
@@ -16,6 +17,7 @@ class application(QtGui.QApplication):
 
 	def run(self):
 		return self.exec_()
+
 
 class mainWindow(QtGui.QMainWindow):
 	def __init__(self, app):
@@ -135,14 +137,18 @@ class tableModel(QtCore.QAbstractTableModel):
 		self._parent._setSortOrder(order)
 
 		self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
-		self.arraydata = sorted(self.arraydata, key=operator.itemgetter(str(self.headerData(Ncol).toString())))
+		self.arraydata = sorted(
+			self.arraydata,
+			key=operator.itemgetter(str(self.headerData(Ncol).toString()))
+		)
 		if order == QtCore.Qt.DescendingOrder:
 			self.arraydata.reverse()
 		self.emit(QtCore.SIGNAL("layoutChanged()"))
 
+
 class table(QtGui.QTableView):
 	def __init__(self, parent, header, data, orderCol, orderWay):
-		super (table, self).__init__ ()
+		super(table, self).__init__()
 		self._extraHeader = ['delete']
 		self._parent = parent
 
@@ -181,7 +187,6 @@ class table(QtGui.QTableView):
 
 	def keyPressEvent(self, e):
 		self._parent.keyPressEvent(e)
-
 
 
 class menu(QtGui.QMenuBar):

@@ -2,6 +2,7 @@
 
 import Model
 
+
 class loan:
 	pass
 
