@@ -10,12 +10,25 @@ import sys
 import config
 import operator
 import csv
+import loan
 
 
 class application(QtGui.QApplication):
 	"""
 	Class for the application. it is here that the main window is created.
 	"""
+
+	_instance = None
+
+	def __new__(cls, *args, **kwargs):
+		if not cls._instance:
+			cls._instance = super(application, cls).__new__(
+								cls, *args, **kwargs)
+		return cls._instance
+
+	@classmethod
+	def getInstance(cls):
+		return cls._instance
 
 	def __init__(self, data, headers):
 		"""
@@ -36,6 +49,10 @@ class application(QtGui.QApplication):
 		Execute the application
 		"""
 		return self.exec_()
+
+	def deleteRow(self, idRow):
+		loan.model.delete(('id_loan = ?', [idRow]))
+		self.widget.table.setData(loan.model.loadAll())
 
 
 class mainWindow(QtGui.QMainWindow):
@@ -89,7 +106,8 @@ class mainWindow(QtGui.QMainWindow):
 		vbox = QtGui.QVBoxLayout(centralWidget)
 		vbox.setMargin(10)
 
-		vbox.addWidget(table(self, self._app.headers, self._app.data, self._orderCol, self._orderWay))
+		self.table = table(self, self._app.headers, self._app.data, self._orderCol, self._orderWay)
+		vbox.addWidget(self.table)
 		newLoanFieldButton = QtGui.QPushButton('Add Loan')
 		#button event
 		#~ newTicketFieldButton.clicked.connect(self._addLoan)
@@ -120,7 +138,7 @@ class mainWindow(QtGui.QMainWindow):
 		Save the existing loans in a csv file, for backup purposes.
 		"""
 		#get the tab name and index
-		fileName = QDir.home().absolutePath() + QDir.separator() + ("loans.csv")
+		fileName = QtCore.QDir.home().absolutePath() + QtCore.QDir.separator() + ("loans.csv")
 		writer = csv.writer(open(fileName, "wb"))
 
 		csvData = []
@@ -231,14 +249,18 @@ class table(QtGui.QTableView):
 		h = self.horizontalHeader()
 		h.setSortIndicator(self._parent._orderCol, self._parent._orderWay)
 
-	def setData(self, data, header):
+	def setData(self, data, header=None):
 		"""
 		Define the model's data.
 		"""
-		self.setHeader(header)
+		if header is not None:
+			self.setHeader(header)
 
+		deleteLabel = 'Delete loan';
 		for row in data:
-			row['delete'] = 'delete Row'
+			row['delete'] = deleteLabel
+
+		self.setItemDelegateForColumn(4, deleteButtonDelegate(self, deleteLabel))
 
 		# set the table model
 		tm = tableModel(data, self._header, self._parent)
@@ -314,3 +336,35 @@ class menu(QtGui.QMenuBar):
 		loansMenu = self.addMenu('&Loans')
 		loansMenu.addAction(newLoanAction)
 		loansMenu.addAction(saveLoansAction)
+
+class deleteButtonDelegate(QtGui.QItemDelegate):
+	def __init__(self, parent, label):
+		QtGui.QItemDelegate.__init__(self, parent)
+		self.label = label
+
+	def paint(self, painter, option, index):
+		self.index = index
+		timerButton = self._getButton(self.parent().getData(index.row(), 4))
+
+		if not self.parent().indexWidget(index):
+			self.parent().setIndexWidget(
+				index,
+				timerButton
+			)
+
+	def _getButton(self, running):
+			return QtGui.QPushButton(
+				self.label,
+				self.parent(),
+				clicked=self.deleteButtonClicked
+			)
+
+	def deleteButtonClicked(self, row):
+		if QtGui.QMessageBox.warning(
+				self.parent(),
+				"Delete loan",
+				"Are you sure you want to delete "
+				"this loan ?",
+				"Yes", "No", '',
+				1, 1) == 0:
+			application.getInstance().deleteRow(self.parent().getData(self.index.row(), 0))
