@@ -1,5 +1,9 @@
 # -*- coding: utf8 -*-
 
+"""
+Module to handle the GUI application
+"""
+
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 import sys
@@ -9,26 +13,61 @@ import csv
 
 
 class application(QtGui.QApplication):
+	"""
+	Class for the application. it is here that the main window is created.
+	"""
+
 	def __init__(self, data, headers):
+		"""
+		a(data, headers) -> loanGUI.application
+
+		Construct of the class. Set the data and creates the main window.
+
+		@param data list of elements to display in the table.
+		@param headers titles of the table's columns.
+		"""
 		super(application, self).__init__(sys.argv)
 		self.data = data
 		self.headers = headers
 		self.widget = mainWindow(self)
 
 	def run(self):
+		"""
+		Execute the application
+		"""
 		return self.exec_()
 
 
 class mainWindow(QtGui.QMainWindow):
+	"""
+	Class for the main window of the application.
+
+	In this window will be listed the existing loans.
+	"""
+
 	def __init__(self, app):
+		"""
+		w(app) -> loanGUI.mainWindow
+
+		Class's construct.
+
+		@param app QtGui.QApplication Application containing the window.
+		"""
 		super(mainWindow, self).__init__()
 		self._app = app
 		(self._orderCol, self._orderWay) = (0, 1)
 		#creation of the UI
 		self.initUI()
 
-	#Create the UI
 	def initUI(self):
+		"""
+		Initialization of the UI:
+		- creation of the menu bar,
+		- creation of the status bar,
+		- creation of the window's content,
+		- definition of the window informations (size, position),
+		- display of the window.
+		"""
 		#top menu
 		self.setMenuBar(menu(self))
 		self.setStatusBar(QtGui.QStatusBar())
@@ -39,8 +78,11 @@ class mainWindow(QtGui.QMainWindow):
 		#display the Whole Thing
 		self.show()
 
-	#method which create the UI
 	def _create(self):
+		"""
+		Method which create the UI
+		The window elements are created here (table, button...)
+		"""
 		# central widget
 		centralWidget = QtGui.QWidget(self)
 		# main layout
@@ -56,10 +98,15 @@ class mainWindow(QtGui.QMainWindow):
 		self.setCentralWidget(centralWidget)
 
 	def displayMessage(self, text):
+		"""
+		Displays a message in the status bar.
+		"""
 		self.statusBar().showMessage(text)
 
-	#define window informations
 	def _setWindowInfos(self):
+		"""
+		Define window informations
+		"""
 		# default size
 		self.setGeometry(300, 300, 600, 600)
 		#~ self.setWidth()
@@ -75,8 +122,10 @@ class mainWindow(QtGui.QMainWindow):
 		pass
 
 	def _saveLoans(self):
+		"""
+		Save the existing loans in a csv file, for backup purposes.
+		"""
 		#get the tab name and index
-
 		fileName = QDir.home().absolutePath() + QDir.separator() + ("loans.csv")
 		writer = csv.writer(open(fileName, "wb"))
 
@@ -95,9 +144,14 @@ class mainWindow(QtGui.QMainWindow):
 
 
 class tableModel(QtCore.QAbstractTableModel):
+	"""
+	Model associated to the QtGui.QTableView
+	"""
+
 	def __init__(self, data, headerdata, parent=None, *args):
-		""" data: a list of lists
-			headerdata: a list of strings
+		"""
+		@param data a list of lists
+		@param headerdata a list of strings
 		"""
 		QtCore.QAbstractTableModel.__init__(self, parent, *args)
 
@@ -106,14 +160,28 @@ class tableModel(QtCore.QAbstractTableModel):
 		self.headerdata = headerdata
 
 	def rowCount(self, parent):
+		"""
+		Returns the number of rows in the table.
+		"""
 		return len(self.arraydata)
 
 	def columnCount(self, parent):
+		"""
+		Returns the number of columns in the table.
+		"""
 		if len(self.arraydata) > 0:
 			return len(self.arraydata[0])
 		return 0
 
 	def data(self, index, role):
+		"""
+		Apply some process to the data, from the given index and the given role.
+
+		@param index current cell
+		@role type of data access, can be QtCore.Qt.DisplayRole to display the
+			data, QtCore.Qt.BackgroundRole to define the background color of
+			the cell...
+		"""
 		if not index.isValid():
 			return QtCore.QVariant()
 		elif role == QtCore.Qt.ForegroundRole:
@@ -126,12 +194,16 @@ class tableModel(QtCore.QAbstractTableModel):
 		return self.arraydata[index.row()][str(self.headerdata[index.column()])]
 
 	def headerData(self, col, orientation=QtCore.Qt.Horizontal, role=QtCore.Qt.DisplayRole):
+		"""
+		Returns the information of the headers
+		"""
 		if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole and len(self.headerdata) > 0:
 			return QtCore.QVariant(self.headerdata[col])
 		return QtCore.QVariant()
 
 	def sort(self, Ncol, order):
-		"""Sort table by given column number.
+		"""
+		Sort table by given column number.
 		"""
 		self._parent._setSortCol(Ncol)
 		self._parent._setSortOrder(order)
@@ -147,7 +219,14 @@ class tableModel(QtCore.QAbstractTableModel):
 
 
 class table(QtGui.QTableView):
+	"""
+	Class to create a GUI table.
+	"""
+
 	def __init__(self, parent, header, data, orderCol, orderWay):
+		"""
+		Construct of the table.
+		"""
 		super(table, self).__init__()
 		self._extraHeader = ['delete']
 		self._parent = parent
@@ -159,6 +238,9 @@ class table(QtGui.QTableView):
 		h.setSortIndicator(self._parent._orderCol, self._parent._orderWay)
 
 	def setData(self, data, header):
+		"""
+		Define the model's data.
+		"""
 		self.setHeader(header)
 
 		for row in data:
@@ -173,24 +255,47 @@ class table(QtGui.QTableView):
 		self.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
 
 	def getData(self, row, col):
-		#@TODO call a method from model to get this
+		"""
+		Return the table data.
+		"""
 		return self.model().arraydata[row][str(self.model().headerData(col).toString())]
 
 	def setHeader(self, header):
+		"""
+		Define the header, which will be the association of the object's extra
+		header and the header given in argument. Used to add actions in the
+		table.
+		"""
 		self._header = header + self._extraHeader
 
 	def getColumnNameFromIndex(self, colIndex):
+		"""
+		Returns the name of a column.
+		"""
 		return self.model().headerData(colIndex).toString()
 
 	def getColumnIndexFromName(self, colName):
+		"""
+		Returns the index of a column.
+		"""
 		return self._header.index(colName)
 
 	def keyPressEvent(self, e):
+		"""
+		Handle the keypress event.
+		"""
 		self._parent.keyPressEvent(e)
 
 
 class menu(QtGui.QMenuBar):
+	"""
+	Class to create the window's menu.
+	"""
+
 	def __init__(self, window):
+		"""
+		Construct of the menu. The menu's items are defined here.
+		"""
 		super(menu, self).__init__(window)
 
 		#exit action
