@@ -260,6 +260,8 @@ class table(QtGui.QTableView):
 		for row in data:
 			row['delete'] = deleteLabel
 
+		self.setItemDelegateForColumn(4, deleteButtonDelegate(self, deleteLabel))
+
 		# set the table model
 		tm = tableModel(data, self._header, self._parent)
 		self.setModel(tm)
