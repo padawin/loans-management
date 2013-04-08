@@ -10,6 +10,7 @@ import sys
 import config
 import operator
 import csv
+import loan
 
 
 class application(QtGui.QApplication):
@@ -48,6 +49,10 @@ class application(QtGui.QApplication):
 		Execute the application
 		"""
 		return self.exec_()
+
+	def deleteRow(self, idRow):
+		loan.model.delete(('id_loan = ?', [idRow]))
+		self.widget.table.setData(loan.model.loadAll())
 
 
 class mainWindow(QtGui.QMainWindow):
