@@ -249,11 +249,12 @@ class table(QtGui.QTableView):
 		h = self.horizontalHeader()
 		h.setSortIndicator(self._parent._orderCol, self._parent._orderWay)
 
-	def setData(self, data, header):
+	def setData(self, data, header=None):
 		"""
 		Define the model's data.
 		"""
-		self.setHeader(header)
+		if header is not None:
+			self.setHeader(header)
 
 		for row in data:
 			row['delete'] = 'delete Row'
