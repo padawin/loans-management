@@ -320,7 +320,7 @@ class menu(QtGui.QMenuBar):
 		exitAction.setStatusTip('Exit application')
 		exitAction.triggered.connect(QtGui.qApp.quit)
 		#new loan action
-		newLoanAction = QtGui.QAction(QtGui.QIcon(config.icons['app']), '&New', window)
+		newLoanAction = QtGui.QAction(QtGui.QIcon(config.icons['app']), '&Create new loan', window)
 		newLoanAction.setStatusTip('Create new loan')
 		newLoanAction.setShortcut('Ctrl+N')
 		newLoanAction.triggered.connect(window._addNewLoan)
