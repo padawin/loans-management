@@ -112,12 +112,6 @@ class mainWindow(QtGui.QMainWindow):
 		#~ self.setWidth()
 		self.setWindowTitle('My loans')
 
-	def _setSortCol(self, col):
-		self._orderCol = col
-
-	def _setSortOrder(self, order):
-		self._orderWay = order
-
 	def _addNewLoan(self):
 		pass
 
@@ -205,8 +199,8 @@ class tableModel(QtCore.QAbstractTableModel):
 		"""
 		Sort table by given column number.
 		"""
-		self._parent._setSortCol(Ncol)
-		self._parent._setSortOrder(order)
+		self._orderCol = Ncol
+		self._orderWay = order
 
 		self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
 		self.arraydata = sorted(
