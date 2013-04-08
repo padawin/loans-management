@@ -256,8 +256,9 @@ class table(QtGui.QTableView):
 		if header is not None:
 			self.setHeader(header)
 
+		deleteLabel = 'Delete loan';
 		for row in data:
-			row['delete'] = 'delete Row'
+			row['delete'] = deleteLabel
 
 		# set the table model
 		tm = tableModel(data, self._header, self._parent)
