@@ -133,7 +133,7 @@ class mainWindow(QtGui.QMainWindow):
 		Save the existing loans in a csv file, for backup purposes.
 		"""
 		#get the tab name and index
-		fileName = QDir.home().absolutePath() + QDir.separator() + ("loans.csv")
+		fileName = QtCore.QDir.home().absolutePath() + QtCore.QDir.separator() + ("loans.csv")
 		writer = csv.writer(open(fileName, "wb"))
 
 		csvData = []
