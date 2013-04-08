@@ -1,14 +1,13 @@
 # -*- coding: utf8 -*-
 
-from PyQt4 import Qt
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtCore
+from PyQt4 import QtGui
 import sys
 import config
 import operator
 import csv
 
-class application(QApplication):
+class application(QtGui.QApplication):
 	def __init__(self, data, headers):
 		super(application, self).__init__(sys.argv)
 		self.data = data
@@ -17,7 +16,7 @@ class application(QApplication):
 		sys.exit(self.exec_())
 
 
-class mainWindow(QMainWindow):
+class mainWindow(QtGui.QMainWindow):
 	def __init__(self, app):
 		super(mainWindow, self).__init__()
 		self._app = app
@@ -29,7 +28,7 @@ class mainWindow(QMainWindow):
 	def initUI(self):
 		#top menu
 		self.setMenuBar(menu(self))
-		self.setStatusBar(QStatusBar())
+		self.setStatusBar(QtGui.QStatusBar())
 		#creation fo the window
 		self._create()
 		#definition if window informations (size, position, title)
@@ -40,13 +39,13 @@ class mainWindow(QMainWindow):
 	#method which create the UI
 	def _create(self):
 		# central widget
-		centralWidget = QWidget(self)
+		centralWidget = QtGui.QWidget(self)
 		# main layout
-		vbox = QVBoxLayout(centralWidget)
+		vbox = QtGui.QVBoxLayout(centralWidget)
 		vbox.setMargin(10)
 
 		vbox.addWidget(table(self, self._app.headers, self._app.data, self._orderCol, self._orderWay))
-		newLoanFieldButton = QPushButton('Add Loan')
+		newLoanFieldButton = QtGui.QPushButton('Add Loan')
 		#button event
 		#~ newTicketFieldButton.clicked.connect(self._addLoan)
 		vbox.addWidget(newLoanFieldButton)
@@ -92,12 +91,12 @@ class mainWindow(QMainWindow):
 		self.displayMessage("Your loans have been saved in the file %s" % (fileName))
 
 
-class tableModel(QAbstractTableModel):
+class tableModel(QtCore.QAbstractTableModel):
 	def __init__(self, data, headerdata, parent=None, *args):
 		""" data: a list of lists
 			headerdata: a list of strings
 		"""
-		QAbstractTableModel.__init__(self, parent, *args)
+		QtCore.QAbstractTableModel.__init__(self, parent, *args)
 
 		self._parent = parent
 		self.arraydata = data
@@ -113,20 +112,20 @@ class tableModel(QAbstractTableModel):
 
 	def data(self, index, role):
 		if not index.isValid():
-			return QVariant()
-		elif role == Qt.ForegroundRole:
-			return QVariant(QColor('#073642'))
-		elif role == Qt.BackgroundRole:
-			return QVariant(QColor('#fdf6e3'))
-		elif role != Qt.DisplayRole:
-			return QVariant()
+			return QtCore.QVariant()
+		elif role == QtCore.Qt.ForegroundRole:
+			return QtCore.QVariant(QtGui.QColor('#073642'))
+		elif role == QtCore.Qt.BackgroundRole:
+			return QtCore.QVariant(QtGui.QColor('#fdf6e3'))
+		elif role != QtCore.Qt.DisplayRole:
+			return QtCore.QVariant()
 
 		return self.arraydata[index.row()][str(self.headerdata[index.column()])]
 
-	def headerData(self, col, orientation=Qt.Horizontal, role=Qt.DisplayRole):
-		if orientation == Qt.Horizontal and role == Qt.DisplayRole and len(self.headerdata) > 0:
-			return QVariant(self.headerdata[col])
-		return QVariant()
+	def headerData(self, col, orientation=QtCore.Qt.Horizontal, role=QtCore.Qt.DisplayRole):
+		if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole and len(self.headerdata) > 0:
+			return QtCore.QVariant(self.headerdata[col])
+		return QtCore.QVariant()
 
 	def sort(self, Ncol, order):
 		"""Sort table by given column number.
@@ -134,13 +133,13 @@ class tableModel(QAbstractTableModel):
 		self._parent._setSortCol(Ncol)
 		self._parent._setSortOrder(order)
 
-		self.emit(SIGNAL("layoutAboutToBeChanged()"))
+		self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
 		self.arraydata = sorted(self.arraydata, key=operator.itemgetter(str(self.headerData(Ncol).toString())))
-		if order == Qt.DescendingOrder:
+		if order == QtCore.Qt.DescendingOrder:
 			self.arraydata.reverse()
-		self.emit(SIGNAL("layoutChanged()"))
+		self.emit(QtCore.SIGNAL("layoutChanged()"))
 
-class table(QTableView):
+class table(QtGui.QTableView):
 	def __init__(self, parent, header, data, orderCol, orderWay):
 		super (table, self).__init__ ()
 		self._extraHeader = ['delete']
@@ -164,7 +163,7 @@ class table(QTableView):
 		self.model().sort(self._parent._orderCol, self._parent._orderWay)
 		# hide vertical header
 		self.verticalHeader().setVisible(False)
-		self.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+		self.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
 
 	def getData(self, row, col):
 		#@TODO call a method from model to get this
@@ -184,22 +183,22 @@ class table(QTableView):
 
 
 
-class menu(QMenuBar):
+class menu(QtGui.QMenuBar):
 	def __init__(self, window):
 		super(menu, self).__init__(window)
 
 		#exit action
-		exitAction = QAction(QIcon(config.icons['app']), '&Exit', window)
+		exitAction = QtGui.QAction(QtGui.QIcon(config.icons['app']), '&Exit', window)
 		exitAction.setShortcut('Ctrl+Q')
 		exitAction.setStatusTip('Exit application')
-		exitAction.triggered.connect(qApp.quit)
+		exitAction.triggered.connect(QtGui.qApp.quit)
 		#new loan action
-		newLoanAction = QAction(QIcon(config.icons['app']), '&New', window)
+		newLoanAction = QtGui.QAction(QtGui.QIcon(config.icons['app']), '&New', window)
 		newLoanAction.setStatusTip('Create new loan')
 		newLoanAction.setShortcut('Ctrl+N')
 		newLoanAction.triggered.connect(window._addNewLoan)
 		#save loans action
-		saveLoansAction = QAction(QIcon(config.icons['app']), '&Save loans', window)
+		saveLoansAction = QtGui.QAction(QtGui.QIcon(config.icons['app']), '&Save loans', window)
 		saveLoansAction.setStatusTip('Save loans to CSV')
 		saveLoansAction.setShortcut('Ctrl+S')
 		saveLoansAction.triggered.connect(window._saveLoans)
