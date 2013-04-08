@@ -101,7 +101,8 @@ class mainWindow(QtGui.QMainWindow):
 		vbox = QtGui.QVBoxLayout(centralWidget)
 		vbox.setMargin(10)
 
-		vbox.addWidget(table(self, self._app.headers, self._app.data, self._orderCol, self._orderWay))
+		self.table = table(self, self._app.headers, self._app.data, self._orderCol, self._orderWay)
+		vbox.addWidget(self.table)
 		newLoanFieldButton = QtGui.QPushButton('Add Loan')
 		#button event
 		#~ newTicketFieldButton.clicked.connect(self._addLoan)
