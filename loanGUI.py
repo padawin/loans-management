@@ -13,8 +13,9 @@ class application(QtGui.QApplication):
 		self.data = data
 		self.headers = headers
 		self.widget = mainWindow(self)
-		sys.exit(self.exec_())
 
+	def run(self):
+		return self.exec_()
 
 class mainWindow(QtGui.QMainWindow):
 	def __init__(self, app):
