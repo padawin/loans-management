@@ -327,3 +327,35 @@ class menu(QtGui.QMenuBar):
 		loansMenu = self.addMenu('&Loans')
 		loansMenu.addAction(newLoanAction)
 		loansMenu.addAction(saveLoansAction)
+
+class deleteButtonDelegate(QtGui.QItemDelegate):
+	def __init__(self, parent, label):
+		QtGui.QItemDelegate.__init__(self, parent)
+		self.label = label
+
+	def paint(self, painter, option, index):
+		self.index = index
+		timerButton = self._getButton(self.parent().getData(index.row(), 4))
+
+		if not self.parent().indexWidget(index):
+			self.parent().setIndexWidget(
+				index,
+				timerButton
+			)
+
+	def _getButton(self, running):
+			return QtGui.QPushButton(
+				self.label,
+				self.parent(),
+				clicked=self.deleteButtonClicked
+			)
+
+	def deleteButtonClicked(self, row):
+		if QtGui.QMessageBox.warning(
+				self.parent(),
+				"Delete loan",
+				"Are you sure you want to delete "
+				"this loan ?",
+				"Yes", "No", '',
+				1, 1) == 0:
+			application.getInstance().deleteRow(self.parent().getData(self.index.row(), 0))
