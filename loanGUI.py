@@ -17,6 +17,18 @@ class application(QtGui.QApplication):
 	Class for the application. it is here that the main window is created.
 	"""
 
+	_instance = None
+
+	def __new__(cls, *args, **kwargs):
+		if not cls._instance:
+			cls._instance = super(application, cls).__new__(
+								cls, *args, **kwargs)
+		return cls._instance
+
+	@classmethod
+	def getInstance(cls):
+		return cls._instance
+
 	def __init__(self, data, headers):
 		"""
 		a(data, headers) -> loanGUI.application
