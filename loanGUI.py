@@ -142,7 +142,7 @@ class mainWindow(QtGui.QMainWindow):
 
 		csvData = []
 		for i in enumerate(self._app.data):
-			tmp = []
+			tmp = list()
 			for v in i[1].values():
 				try:
 					tmp.append(v.encode('utf-8'))
