@@ -52,7 +52,8 @@ class application(QtGui.QApplication):
 
 	def deleteRow(self, idRow):
 		loan.model.delete(('id_loan = ?', [idRow]))
-		self.widget.table.setData(loan.model.loadAll())
+		self.data = loan.model.loadAll()
+		self.widget.table.setData(self.data)
 
 
 class mainWindow(QtGui.QMainWindow):
