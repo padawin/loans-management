@@ -52,7 +52,8 @@ class application(QtGui.QApplication):
 
 	def deleteRow(self, idRow):
 		loan.model.delete(('id_loan = ?', [idRow]))
-		self.widget.table.setData(loan.model.loadAll())
+		self.data = loan.model.loadAll()
+		self.widget.table.setData(self.data)
 
 
 class mainWindow(QtGui.QMainWindow):
@@ -137,20 +138,25 @@ class mainWindow(QtGui.QMainWindow):
 		"""
 		Save the existing loans in a csv file, for backup purposes.
 		"""
-		#get the tab name and index
+		if len(self._app.data) == 0:
+			self.displayMessage("No loan to save")
+			return
+
 		fileName = QtCore.QDir.home().absolutePath() + QtCore.QDir.separator() + ("loans.csv")
 		writer = csv.writer(open(fileName, "wb"))
 
 		csvData = []
 		for i in enumerate(self._app.data):
-			tmp = []
-			for v in i[1].values():
+			row = {k: i[1][k] for k in loan.model.fields}
+			tmp = list()
+			for v in row.values():
 				try:
 					tmp.append(v.encode('utf-8'))
 				except:
 					tmp.append(v)
 			csvData.append(tmp)
 
+		csvData.insert(0, row.keys())
 		writer.writerows(csvData)
 		self.displayMessage("Your loans have been saved in the file %s" % (fileName))
 
@@ -336,6 +342,7 @@ class menu(QtGui.QMenuBar):
 		loansMenu = self.addMenu('&Loans')
 		loansMenu.addAction(newLoanAction)
 		loansMenu.addAction(saveLoansAction)
+
 
 class deleteButtonDelegate(QtGui.QItemDelegate):
 	def __init__(self, parent, label):
