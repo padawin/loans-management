@@ -343,6 +343,7 @@ class menu(QtGui.QMenuBar):
 		loansMenu.addAction(newLoanAction)
 		loansMenu.addAction(saveLoansAction)
 
+
 class deleteButtonDelegate(QtGui.QItemDelegate):
 	def __init__(self, parent, label):
 		QtGui.QItemDelegate.__init__(self, parent)
