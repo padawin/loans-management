@@ -142,14 +142,16 @@ class mainWindow(QtGui.QMainWindow):
 
 		csvData = []
 		for i in enumerate(self._app.data):
+			row = {k: i[1][k] for k in loan.model.fields}
 			tmp = list()
-			for v in i[1].values():
+			for v in row.values():
 				try:
 					tmp.append(v.encode('utf-8'))
 				except:
 					tmp.append(v)
 			csvData.append(tmp)
 
+		csvData.insert(0, row.keys())
 		writer.writerows(csvData)
 		self.displayMessage("Your loans have been saved in the file %s" % (fileName))
 
