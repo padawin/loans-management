@@ -190,6 +190,7 @@ class mainWindow(QtGui.QMainWindow):
 			csvData.append(row)
 
 		writer = csv.DictWriter(open(fileName, "wb"), row.keys())
+		writer.writeheader()
 		writer.writerows(csvData)
 		self.displayMessage("Your loans have been saved in the file %s" % (fileName))
 
