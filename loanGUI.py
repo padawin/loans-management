@@ -401,7 +401,7 @@ class addLoan(QtGui.QWidget):
 		return cls._instance
 
 	def __init__(self, app):
-		super(addLoan, self).__init__() #creation of the UI
+		super(addLoan, self).__init__()
 		self._app = app
 		self.initUI()
 		self._setWindowInfos()
