@@ -372,13 +372,10 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 
 	def paint(self, painter, option, index):
 		self.index = index
-		timerButton = self._getButton(self.parent().getData(index.row(), 4))
+		button = self._getButton(self.parent().getData(index.row(), 4))
 
 		if not self.parent().indexWidget(index):
-			self.parent().setIndexWidget(
-				index,
-				timerButton
-			)
+			self.parent().setIndexWidget(index, button)
 
 	def _getButton(self, running):
 			return QtGui.QPushButton(
