@@ -366,11 +366,21 @@ class menu(QtGui.QMenuBar):
 
 
 class deleteButtonDelegate(QtGui.QItemDelegate):
+	"""
+	Class to create a button to be used in the table.
+	"""
+
 	def __init__(self, parent, label):
+		"""
+		Construct, set the button's label.
+		"""
 		QtGui.QItemDelegate.__init__(self, parent)
 		self.label = label
 
 	def paint(self, painter, option, index):
+		"""
+		Displays the button in the good cell.
+		"""
 		self.index = index
 		button = self._getButton(self.parent().getData(index.row(), 4))
 
@@ -378,6 +388,15 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 			self.parent().setIndexWidget(index, button)
 
 	def _getButton(self, running):
+		"""
+		d._getButton(running) -> QtGui.QPushButton
+
+		Create the button widget
+
+		@param running
+
+		@return QtGui.QPushButton
+		"""
 		return QtGui.QPushButton(
 			self.label,
 			self.parent(),
@@ -385,6 +404,10 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 		)
 
 	def deleteButtonClicked(self, row):
+		"""
+		Action to execute when the button is pressed.
+		It'll ask a confirmation to the user to delete the corresponding row.
+		"""
 		if QtGui.QMessageBox.warning(
 				self.parent(),
 				"Delete loan",
@@ -396,6 +419,9 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 
 
 class addLoan(QtGui.QWidget):
+	"""
+	Widget containing a form to add some loans
+	"""
 
 	_instance = None
 
@@ -410,13 +436,24 @@ class addLoan(QtGui.QWidget):
 		return cls._instance
 
 	def __init__(self, app):
+		"""
+		Construct. Set the app, create the UI and define some informations
+		for the window (such as its size and position).
+		"""
 		super(addLoan, self).__init__()
 		self._app = app
 		self.initUI()
 		self._setWindowInfos()
 
 	def initUI(self):
+		"""
+		Create the widget's UI.
+		"""
+
+		#~ initialization of the layout
 		self.layout = QtGui.QGridLayout()
+
+		#~ Creation of the fields (labels, fields, errors labels)
 		whoLabel = QtGui.QLabel('Who ?')
 		self.whoField = QtGui.QLineEdit()
 		self.whoErrorLabel = QtGui.QLabel()
@@ -434,11 +471,17 @@ class addLoan(QtGui.QWidget):
 		self.whenErrorLabel = QtGui.QLabel()
 		self.whenErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
 
+		#~ Creation of the buttons
 		self.cancelButton = QtGui.QPushButton('cancel')
 		self.addButton = QtGui.QPushButton('Add')
 		self.cancelButton.clicked.connect(self.closeWindow)
 		self.addButton.clicked.connect(self.addLoanAction)
 
+		#~ The elements are added here in the layout
+		#~ With the gridlayout, the elements are added to specific coordinates
+		#~ in the grid (arguments 2 and 3 of the addWidget method), and are
+		#~ defined to fill a specific space (arguments 4 and 5 of the addWidget
+		#~ method)
 		self.layout.addWidget(whoLabel, 1, 0)
 		self.layout.addWidget(self.whoField, 1, 1, 1, 2)
 		self.layout.addWidget(self.whoErrorLabel, 1, 4)
@@ -451,10 +494,13 @@ class addLoan(QtGui.QWidget):
 		self.layout.addWidget(self.cancelButton, 4, 1)
 		self.layout.addWidget(self.addButton, 4, 2)
 
+		#~ Definition of the widget's layout
 		self.setLayout(self.layout)
 
-
 	def _setWindowInfos(self):
+		"""
+		Definition of the window's informations
+		"""
 		self.setGeometry(0, 0, 400, 300)
 		self.setFixedSize(400, 300)
 		resolution = QtGui.QDesktopWidget().screenGeometry()
@@ -464,6 +510,11 @@ class addLoan(QtGui.QWidget):
 		self.setWindowTitle('Add loan')
 
 	def addLoanAction(self):
+		"""
+		Method executed when the addLoan button is pressed.
+		It cleans and checks the parameters before trying to insert
+		them through the loan.model.
+		"""
 		import re
 		who = str(self.whoField.text()).strip()
 		when = str(self.whenField.text())
@@ -476,6 +527,17 @@ class addLoan(QtGui.QWidget):
 			self.closeWindow()
 
 	def handleErrors(self, fields):
+		"""
+		w.handleErrors(fields) -> bool
+
+		Check if the fields's values are correct.
+		If a field is incorrect, a message is added in its corresponding
+		error label.
+
+		@param fields dict of the fields to check
+
+		@return bool True if there is no error, False else
+		"""
 		valid = True
 		if len(fields['who']) == 0:
 			self.whoErrorLabel.setText('A value is expected')
@@ -490,10 +552,16 @@ class addLoan(QtGui.QWidget):
 		return valid
 
 	def keyPressEvent(self, e):
+		"""
+		Handle keyboard events on the widget.
+		"""
 		if e.key() == QtCore.Qt.Key_Escape:
 			self.closeWindow()
 
 	def closeWindow(self):
+		"""
+		Empties the fields and error labels before closing the widget.
+		"""
 		self.whoField.setText('')
 		self.whenField.setDate(QtCore.QDate.currentDate())
 		self.whatField.setText('')
