@@ -140,7 +140,7 @@ class mainWindow(QtGui.QMainWindow):
 
 	def _addNewLoan(self):
 		if self.addWidget is None:
-			self.addWidget = addLoan()
+			self.addWidget = addLoan(self._app)
 		self.addWidget.show()
 
 	def _saveLoans(self):
@@ -400,8 +400,9 @@ class addLoan(QtGui.QWidget):
 	def getInstance(cls):
 		return cls._instance
 
-	def __init__(self):
+	def __init__(self, app):
 		super(addLoan, self).__init__() #creation of the UI
+		self._app = app
 		self.initUI()
 		self._setWindowInfos()
 
