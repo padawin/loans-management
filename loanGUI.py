@@ -378,11 +378,11 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 			self.parent().setIndexWidget(index, button)
 
 	def _getButton(self, running):
-			return QtGui.QPushButton(
-				self.label,
-				self.parent(),
-				clicked=self.deleteButtonClicked
-			)
+		return QtGui.QPushButton(
+			self.label,
+			self.parent(),
+			clicked=self.deleteButtonClicked
+		)
 
 	def deleteButtonClicked(self, row):
 		if QtGui.QMessageBox.warning(
