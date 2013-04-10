@@ -55,6 +55,12 @@ class application(QtGui.QApplication):
 		self.data = loan.model.loadAll()
 		self.widget.table.setData(self.data)
 
+	def addRows(self, data):
+		for r in data:
+			loan.model.insert(r)
+		self.data = loan.model.loadAll()
+		self.widget.table.setData(self.data)
+
 
 class mainWindow(QtGui.QMainWindow):
 	"""
@@ -73,6 +79,7 @@ class mainWindow(QtGui.QMainWindow):
 		"""
 		super(mainWindow, self).__init__()
 		self._app = app
+		self.addWidget = None
 		(self._orderCol, self._orderWay) = (0, 1)
 		#creation of the UI
 		self.initUI()
@@ -111,7 +118,7 @@ class mainWindow(QtGui.QMainWindow):
 		vbox.addWidget(self.table)
 		newLoanFieldButton = QtGui.QPushButton('Add Loan')
 		#button event
-		#~ newTicketFieldButton.clicked.connect(self._addLoan)
+		newLoanFieldButton.clicked.connect(self._addNewLoan)
 		vbox.addWidget(newLoanFieldButton)
 
 		self.setCentralWidget(centralWidget)
@@ -132,7 +139,9 @@ class mainWindow(QtGui.QMainWindow):
 		self.setWindowTitle('My loans')
 
 	def _addNewLoan(self):
-		pass
+		if self.addWidget is None:
+			self.addWidget = addLoan(self._app)
+		self.addWidget.show()
 
 	def _saveLoans(self):
 		"""
@@ -375,3 +384,111 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 				"Yes", "No", '',
 				1, 1) == 0:
 			application.getInstance().deleteRow(self.parent().getData(self.index.row(), 0))
+
+
+class addLoan(QtGui.QWidget):
+
+	_instance = None
+
+	def __new__(cls, *args, **kwargs):
+		if not cls._instance:
+			cls._instance = super(addLoan, cls).__new__(
+								cls, *args, **kwargs)
+		return cls._instance
+
+	@classmethod
+	def getInstance(cls):
+		return cls._instance
+
+	def __init__(self, app):
+		super(addLoan, self).__init__()
+		self._app = app
+		self.initUI()
+		self._setWindowInfos()
+
+	def initUI(self):
+		self.layout = QtGui.QGridLayout()
+		whoLabel = QtGui.QLabel('Who ?')
+		self.whoField = QtGui.QLineEdit()
+		self.whoErrorLabel = QtGui.QLabel()
+		self.whoErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+
+		whatLabel = QtGui.QLabel('What ?')
+		self.whatField = QtGui.QTextEdit()
+		self.whatErrorLabel = QtGui.QLabel()
+		self.whatErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+
+		whenLabel = QtGui.QLabel('When ?')
+		self.whenField = QtGui.QDateEdit(QtCore.QDate.currentDate())
+		self.whenField.setDisplayFormat('yyyy-MM-dd')
+		self.whenField.setCalendarPopup(True)
+		self.whenErrorLabel = QtGui.QLabel()
+		self.whenErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+
+		self.cancelButton = QtGui.QPushButton('cancel')
+		self.addButton = QtGui.QPushButton('Add')
+
+		self.layout.addWidget(whoLabel, 1, 0)
+		self.layout.addWidget(self.whoField, 1, 1, 1, 2)
+		self.layout.addWidget(self.whoErrorLabel, 1, 4)
+		self.layout.addWidget(whatLabel, 2, 0)
+		self.layout.addWidget(self.whatField, 2, 1, 1, 2)
+		self.layout.addWidget(self.whatErrorLabel, 2, 4)
+		self.layout.addWidget(whenLabel, 3, 0)
+		self.layout.addWidget(self.whenField, 3, 1, 1, 2)
+		self.layout.addWidget(self.whenErrorLabel, 3, 4)
+		self.layout.addWidget(self.cancelButton, 4, 1)
+		self.layout.addWidget(self.addButton, 4, 2)
+
+		self.cancelButton.clicked.connect(self.closeWindow)
+		self.addButton.clicked.connect(self.addLoanAction)
+
+		self.setLayout(self.layout)
+
+
+	def _setWindowInfos(self):
+		self.setGeometry(0, 0, 400, 300)
+		self.setFixedSize(400, 300)
+		resolution = QtGui.QDesktopWidget().screenGeometry()
+		self.move((resolution.width() / 2) - (self.frameSize().width() / 2),
+				  (resolution.height() / 2) - (self.frameSize().height() / 2))
+
+		self.setWindowTitle('Add loan')
+
+	def addLoanAction(self):
+		import re
+		who = str(self.whoField.text()).strip()
+		when = str(self.whenField.text())
+		what = self.whatField.toPlainText()
+		objects = re.split(',|\n', self.whatField.toPlainText())
+		data = [{'what': str(w).strip(), 'lent_to': who, 'date_loan': when} for w in objects if str(w).strip() != '']
+
+		if not self.handleErrors({'who': who, 'what': what}):
+			self._app.addRows(data)
+			self.closeWindow()
+
+	def handleErrors(self, fields):
+		error = False
+		if len(fields['who']) == 0:
+			self.whoErrorLabel.setText('A value is expected')
+			error = True
+		else:
+			self.whoErrorLabel.clear()
+		if len(fields['what']) == 0:
+			self.whatErrorLabel.setText('A value is expected')
+			error = True
+		else:
+			self.whatErrorLabel.clear()
+		return error
+
+	def keyPressEvent(self, e):
+		if e.key() == QtCore.Qt.Key_Escape:
+			self.closeWindow()
+
+	def closeWindow(self):
+		self.whoField.setText('')
+		self.whenField.setDate(QtCore.QDate.currentDate())
+		self.whatField.setText('')
+		self.whoErrorLabel.clear()
+		self.whatErrorLabel.clear()
+		self.close()
