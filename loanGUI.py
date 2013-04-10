@@ -436,6 +436,8 @@ class addLoan(QtGui.QWidget):
 
 		self.cancelButton = QtGui.QPushButton('cancel')
 		self.addButton = QtGui.QPushButton('Add')
+		self.cancelButton.clicked.connect(self.closeWindow)
+		self.addButton.clicked.connect(self.addLoanAction)
 
 		self.layout.addWidget(whoLabel, 1, 0)
 		self.layout.addWidget(self.whoField, 1, 1, 1, 2)
@@ -448,9 +450,6 @@ class addLoan(QtGui.QWidget):
 		self.layout.addWidget(self.whenErrorLabel, 3, 4)
 		self.layout.addWidget(self.cancelButton, 4, 1)
 		self.layout.addWidget(self.addButton, 4, 2)
-
-		self.cancelButton.clicked.connect(self.closeWindow)
-		self.addButton.clicked.connect(self.addLoanAction)
 
 		self.setLayout(self.layout)
 
