@@ -235,13 +235,13 @@ class tableModel(QtCore.QAbstractTableModel):
 			the cell...
 		"""
 		if not index.isValid():
-			return QtCore.QVariant()
+			return None
 		elif role == QtCore.Qt.ForegroundRole:
-			return QtCore.QVariant(QtGui.QColor('#073642'))
+			return QtGui.QColor('#073642')
 		elif role == QtCore.Qt.BackgroundRole:
-			return QtCore.QVariant(QtGui.QColor('#fdf6e3'))
+			return QtGui.QColor('#fdf6e3')
 		elif role != QtCore.Qt.DisplayRole:
-			return QtCore.QVariant()
+			return None
 
 		return self.arraydata[index.row()][str(self.headerdata[index.column()])]
 
@@ -250,8 +250,8 @@ class tableModel(QtCore.QAbstractTableModel):
 		Returns the information of the headers
 		"""
 		if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole and len(self.headerdata) > 0:
-			return QtCore.QVariant(self.headerdata[col])
-		return QtCore.QVariant()
+			return self.headerdata[col]
+		return None
 
 	def sort(self, Ncol, order):
 		"""
@@ -263,7 +263,7 @@ class tableModel(QtCore.QAbstractTableModel):
 		self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
 		self.arraydata = sorted(
 			self.arraydata,
-			key=operator.itemgetter(str(self.headerData(Ncol).toString()))
+			key=operator.itemgetter(str(self.headerData(Ncol)))
 		)
 		if order == QtCore.Qt.DescendingOrder:
 			self.arraydata.reverse()
@@ -314,7 +314,7 @@ class table(QtGui.QTableView):
 		"""
 		Return the table data.
 		"""
-		return self.model().arraydata[row][str(self.model().headerData(col).toString())]
+		return self.model().arraydata[row][str(self.model().headerData(col))]
 
 	def setHeader(self, header):
 		"""
