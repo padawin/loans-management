@@ -51,11 +51,25 @@ class application(QtGui.QApplication):
 		return self.exec_()
 
 	def deleteRow(self, idRow):
+		"""
+		a.deleteRow(idRow)
+
+		Delete a row in the database and refresh the display
+
+		@param idRow integer id of the row to delete
+		"""
 		loan.model.delete(('id_loan = ?', [idRow]))
 		self.data = loan.model.loadAll()
 		self.widget.table.setData(self.data)
 
 	def addRows(self, data):
+		"""
+		a.addRows(data)
+
+		Add a collection of rows in the database and refresh the display
+
+		@param data list rows to add in the database
+		"""
 		for r in data:
 			loan.model.insert(r)
 		self.data = loan.model.loadAll()
