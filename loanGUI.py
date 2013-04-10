@@ -452,6 +452,20 @@ class addLoan(QtGui.QWidget):
 
 		self.setWindowTitle('Add loan')
 
+	def handleErrors(self, fields):
+		error = False
+		if len(fields['who']) == 0:
+			self.whoErrorLabel.setText('A value is expected')
+			error = True
+		else:
+			self.whoErrorLabel.clear()
+		if len(fields['what']) == 0:
+			self.whatErrorLabel.setText('A value is expected')
+			error = True
+		else:
+			self.whatErrorLabel.clear()
+		return error
+
 	def keyPressEvent(self, e):
 		if e.key() == QtCore.Qt.Key_Escape:
 			self.close()
