@@ -132,7 +132,8 @@ class mainWindow(QtGui.QMainWindow):
 		self.setWindowTitle('My loans')
 
 	def _addNewLoan(self):
-		pass
+		add = addLoan()
+		add.show()
 
 	def _saveLoans(self):
 		"""
@@ -375,3 +376,62 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 				"Yes", "No", '',
 				1, 1) == 0:
 			application.getInstance().deleteRow(self.parent().getData(self.index.row(), 0))
+
+
+class addLoan(QtGui.QWidget):
+
+	_instance = None
+
+	def __new__(cls, *args, **kwargs):
+		if not cls._instance:
+			cls._instance = super(addLoan, cls).__new__(
+								cls, *args, **kwargs)
+		return cls._instance
+
+	@classmethod
+	def getInstance(cls):
+		return cls._instance
+
+	def __init__(self):
+		super(addLoan, self).__init__() #creation of the UI
+		self.initUI()
+		self._setWindowInfos()
+
+	def initUI(self):
+		self.layout = QtGui.QGridLayout()
+		whoLabel = QtGui.QLabel('Who ?')
+		self.whoField = QtGui.QLineEdit()
+
+		whatLabel = QtGui.QLabel('What ?')
+		self.whatField = QtGui.QTextEdit()
+
+		whenLabel = QtGui.QLabel('When ?')
+		self.whenField = QtGui.QDateEdit()
+
+		self.cancelButton = QtGui.QPushButton('cancel')
+		self.addButton = QtGui.QPushButton('Add')
+
+		self.layout.addWidget(whoLabel, 1, 0)
+		self.layout.addWidget(self.whoField, 1, 1, 1, 2)
+		self.layout.addWidget(whatLabel, 2, 0)
+		self.layout.addWidget(self.whatField, 2, 1, 1, 2)
+		self.layout.addWidget(whenLabel, 3, 0)
+		self.layout.addWidget(self.whenField, 3, 1, 1, 2)
+		self.layout.addWidget(self.cancelButton, 4, 1)
+		self.layout.addWidget(self.addButton, 4, 2)
+
+		self.setLayout(self.layout)
+
+
+	def _setWindowInfos(self):
+		self.setGeometry(0, 0, 400, 300)
+		self.setFixedSize(400, 300)
+		resolution = QtGui.QDesktopWidget().screenGeometry()
+		self.move((resolution.width() / 2) - (self.frameSize().width() / 2),
+				  (resolution.height() / 2) - (self.frameSize().height() / 2))
+
+		self.setWindowTitle('Add loan')
+
+	def keyPressEvent(self, e):
+		if e.key() == QtCore.Qt.Key_Escape:
+			self.close()
