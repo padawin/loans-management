@@ -178,7 +178,6 @@ class mainWindow(QtGui.QMainWindow):
 			return
 
 		fileName = QtCore.QDir.home().absolutePath() + QtCore.QDir.separator() + ("loans.csv")
-		writer = csv.writer(open(fileName, "wb"))
 
 		csvData = []
 		for i in enumerate(self._app.data):
@@ -191,7 +190,7 @@ class mainWindow(QtGui.QMainWindow):
 					tmp.append(v)
 			csvData.append(tmp)
 
-		csvData.insert(0, row.keys())
+		writer = csv.DictWriter(open(fileName, "wb"), row.keys())
 		writer.writerows(csvData)
 		self.displayMessage("Your loans have been saved in the file %s" % (fileName))
 
