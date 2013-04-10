@@ -79,6 +79,7 @@ class mainWindow(QtGui.QMainWindow):
 		"""
 		super(mainWindow, self).__init__()
 		self._app = app
+		self.addWidget = None
 		(self._orderCol, self._orderWay) = (0, 1)
 		#creation of the UI
 		self.initUI()
