@@ -263,7 +263,7 @@ class tableModel(QtCore.QAbstractTableModel):
 		self.emit(QtCore.SIGNAL("layoutAboutToBeChanged()"))
 		self.arraydata = sorted(
 			self.arraydata,
-			key=operator.itemgetter(str(self.headerData(Ncol).toString()))
+			key=operator.itemgetter(str(self.headerData(Ncol)))
 		)
 		if order == QtCore.Qt.DescendingOrder:
 			self.arraydata.reverse()
@@ -314,7 +314,7 @@ class table(QtGui.QTableView):
 		"""
 		Return the table data.
 		"""
-		return self.model().arraydata[row][str(self.model().headerData(col).toString())]
+		return self.model().arraydata[row][str(self.model().headerData(col))]
 
 	def setHeader(self, header):
 		"""
