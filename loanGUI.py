@@ -471,23 +471,23 @@ class addLoan(QtGui.QWidget):
 		objects = re.split(',|\n', self.whatField.toPlainText())
 		data = [{'what': str(w).strip(), 'lent_to': who, 'date_loan': when} for w in objects if str(w).strip() != '']
 
-		if not self.handleErrors({'who': who, 'what': what}):
+		if self.handleErrors({'who': who, 'what': what}):
 			self._app.addRows(data)
 			self.closeWindow()
 
 	def handleErrors(self, fields):
-		error = False
+		valid = True
 		if len(fields['who']) == 0:
 			self.whoErrorLabel.setText('A value is expected')
-			error = True
+			valid = False
 		else:
 			self.whoErrorLabel.clear()
 		if len(fields['what']) == 0:
 			self.whatErrorLabel.setText('A value is expected')
-			error = True
+			valid = False
 		else:
 			self.whatErrorLabel.clear()
-		return error
+		return valid
 
 	def keyPressEvent(self, e):
 		if e.key() == QtCore.Qt.Key_Escape:
