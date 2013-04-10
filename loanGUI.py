@@ -178,20 +178,19 @@ class mainWindow(QtGui.QMainWindow):
 			return
 
 		fileName = QtCore.QDir.home().absolutePath() + QtCore.QDir.separator() + ("loans.csv")
-		writer = csv.writer(open(fileName, "wb"))
 
-		csvData = []
-		for i in enumerate(self._app.data):
-			row = {k: i[1][k] for k in loan.model.fields}
-			tmp = list()
-			for v in row.values():
+		csvData = list()
+		for i in self._app.data:
+			row = {k: i[k] for k in loan.model.fields}
+			for k in row:
 				try:
-					tmp.append(v.encode('utf-8'))
+					row[k] = row[k].encode('utf-8')
 				except:
-					tmp.append(v)
-			csvData.append(tmp)
+					row[k] = str(row[k])
+			csvData.append(row)
 
-		csvData.insert(0, row.keys())
+		writer = csv.DictWriter(open(fileName, "wb"), row.keys())
+		writer.writeheader()
 		writer.writerows(csvData)
 		self.displayMessage("Your loans have been saved in the file %s" % (fileName))
 
