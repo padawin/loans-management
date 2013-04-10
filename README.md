@@ -6,7 +6,7 @@ A simple application to manage the things you lend to people
 
 You'll need the following packages to run the game:
 - python-qt4
-- python 2.7
+- python 2.7 or higher
 - sqlite3
 
 ## Installation
