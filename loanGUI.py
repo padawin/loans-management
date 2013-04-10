@@ -468,4 +468,12 @@ class addLoan(QtGui.QWidget):
 
 	def keyPressEvent(self, e):
 		if e.key() == QtCore.Qt.Key_Escape:
-			self.close()
+			self.closeWindow()
+
+	def closeWindow(self):
+		self.whoField.setText('')
+		self.whenField.setDate(QtCore.QDate.currentDate())
+		self.whatField.setText('')
+		self.whoErrorLabel.clear()
+		self.whatErrorLabel.clear()
+		self.close()
