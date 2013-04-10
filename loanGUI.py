@@ -416,6 +416,8 @@ class addLoan(QtGui.QWidget):
 
 		whenLabel = QtGui.QLabel('When ?')
 		self.whenField = QtGui.QDateEdit(QtCore.QDate.currentDate())
+		self.whenField.setDisplayFormat('yyyy-MM-dd')
+		self.whenField.setCalendarPopup(True)
 
 		self.cancelButton = QtGui.QPushButton('cancel')
 		self.addButton = QtGui.QPushButton('Add')
