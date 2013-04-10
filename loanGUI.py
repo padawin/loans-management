@@ -410,24 +410,33 @@ class addLoan(QtGui.QWidget):
 		self.layout = QtGui.QGridLayout()
 		whoLabel = QtGui.QLabel('Who ?')
 		self.whoField = QtGui.QLineEdit()
+		self.whoErrorLabel = QtGui.QLabel()
+		self.whoErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
 
 		whatLabel = QtGui.QLabel('What ?')
 		self.whatField = QtGui.QTextEdit()
+		self.whatErrorLabel = QtGui.QLabel()
+		self.whatErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
 
 		whenLabel = QtGui.QLabel('When ?')
 		self.whenField = QtGui.QDateEdit(QtCore.QDate.currentDate())
 		self.whenField.setDisplayFormat('yyyy-MM-dd')
 		self.whenField.setCalendarPopup(True)
+		self.whenErrorLabel = QtGui.QLabel()
+		self.whenErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
 
 		self.cancelButton = QtGui.QPushButton('cancel')
 		self.addButton = QtGui.QPushButton('Add')
 
 		self.layout.addWidget(whoLabel, 1, 0)
 		self.layout.addWidget(self.whoField, 1, 1, 1, 2)
+		self.layout.addWidget(self.whoErrorLabel, 1, 4)
 		self.layout.addWidget(whatLabel, 2, 0)
 		self.layout.addWidget(self.whatField, 2, 1, 1, 2)
+		self.layout.addWidget(self.whatErrorLabel, 2, 4)
 		self.layout.addWidget(whenLabel, 3, 0)
 		self.layout.addWidget(self.whenField, 3, 1, 1, 2)
+		self.layout.addWidget(self.whenErrorLabel, 3, 4)
 		self.layout.addWidget(self.cancelButton, 4, 1)
 		self.layout.addWidget(self.addButton, 4, 2)
 
