@@ -139,8 +139,9 @@ class mainWindow(QtGui.QMainWindow):
 		self.setWindowTitle('My loans')
 
 	def _addNewLoan(self):
-		add = addLoan()
-		add.show()
+		if self.addWidget is None:
+			self.addWidget = addLoan()
+		self.addWidget.show()
 
 	def _saveLoans(self):
 		"""
