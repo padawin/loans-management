@@ -452,6 +452,18 @@ class addLoan(QtGui.QWidget):
 
 		self.setWindowTitle('Add loan')
 
+	def addLoanAction(self):
+		import re
+		who = str(self.whoField.text()).strip()
+		when = str(self.whenField.text())
+		what = self.whatField.toPlainText()
+		objects = re.split(',|\n', self.whatField.toPlainText())
+		data = [{'what': str(w).strip(), 'lent_to': who, 'date_loan': when} for w in objects if str(w).strip() != '']
+
+		if not self.handleErrors({'who': who, 'what': what}):
+			self._app.addRows(data)
+			self.closeWindow()
+
 	def handleErrors(self, fields):
 		error = False
 		if len(fields['who']) == 0:
