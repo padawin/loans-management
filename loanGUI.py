@@ -440,6 +440,9 @@ class addLoan(QtGui.QWidget):
 		self.layout.addWidget(self.cancelButton, 4, 1)
 		self.layout.addWidget(self.addButton, 4, 2)
 
+		self.cancelButton.clicked.connect(self.closeWindow)
+		self.addButton.clicked.connect(self.addLoanAction)
+
 		self.setLayout(self.layout)
 
 
