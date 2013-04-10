@@ -55,6 +55,12 @@ class application(QtGui.QApplication):
 		self.data = loan.model.loadAll()
 		self.widget.table.setData(self.data)
 
+	def addRows(self, data):
+		for r in data:
+			loan.model.insert(r)
+		self.data = loan.model.loadAll()
+		self.widget.table.setData(self.data)
+
 
 class mainWindow(QtGui.QMainWindow):
 	"""
