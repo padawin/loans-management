@@ -69,6 +69,18 @@ class mainWindow(QtGui.QMainWindow):
 	In this window will be listed the existing loans.
 	"""
 
+	_instance = None
+
+	def __new__(cls, *args, **kwargs):
+		if not cls._instance:
+			cls._instance = super(mainWindow, cls).__new__(
+								cls, *args, **kwargs)
+		return cls._instance
+
+	@classmethod
+	def getInstance(cls):
+		return cls._instance
+
 	def __init__(self, app):
 		"""
 		w(app) -> loanGUI.mainWindow
