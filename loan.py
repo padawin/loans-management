@@ -8,4 +8,4 @@ class loan:
 
 
 class model(Model.Model):
-	fields = ['id_loan', 'lent_to', 'what', 'date_loan']
+	fields = ['id_loan', 'lent_to', 'what', 'date_loan', 'date_return']
