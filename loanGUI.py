@@ -184,12 +184,12 @@ class mainWindow(QtGui.QMainWindow):
 
 		csvData = list()
 		for i in self._app.data:
-			row = {k: i[k] for k in loan.model.fields}
+			row = {k: i[k] for k in loan.loan.exportFields}
 			for k in row:
 				try:
 					row[k] = row[k].encode('utf-8')
 				except:
-					row[k] = str(row[k])
+					row[k] = '' if row[k] is None else str(row[k])
 			csvData.append(row)
 
 		writer = csv.DictWriter(open(fileName, "wb"), row.keys())
