@@ -14,7 +14,7 @@ def main(argv):
 	Main method. Here are loaded the existing loans, and then the GUI is
 	created.
 	"""
-	l = loan.model.loadAll()
+	l = loan.model.loadUnreturned()
 	lApp = loanGUI.application(l, loan.model.fields)
 	sys.exit(lApp.run())
 

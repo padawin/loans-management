@@ -50,17 +50,17 @@ class application(QtGui.QApplication):
 		"""
 		return self.exec_()
 
-	def deleteRow(self, idRow):
+	def returnRow(self, idRow):
 		"""
-		a.deleteRow(idRow)
+		a.returnRow(idRow)
 
-		Delete a row in the database and refresh the display
+		Flag a row as returned. Will not be displayed anymore
 
-		@param idRow integer id of the row to delete
+		@param idRow integer id of the row to return
 		"""
-		loan.model.delete(('id_loan = ?', [idRow]))
-		self.data = loan.model.loadAll()
-		self.widget.table.setData(self.data)
+
+		loan.loan.returnLoan(idRow)
+		self.refreshData()
 
 	def addRows(self, data):
 		"""
@@ -72,7 +72,10 @@ class application(QtGui.QApplication):
 		"""
 		for r in data:
 			loan.model.insert(r)
-		self.data = loan.model.loadAll()
+		self.refreshData()
+
+	def refreshData(self):
+		self.data = loan.model.loadUnreturned()
 		self.widget.table.setData(self.data)
 
 
@@ -280,7 +283,7 @@ class table(QtGui.QTableView):
 		Construct of the table.
 		"""
 		super(table, self).__init__()
-		self._extraHeader = ['delete']
+		self._extraHeader = ['return']
 		self._parent = parent
 
 		self.setSortingEnabled(True)
@@ -296,11 +299,11 @@ class table(QtGui.QTableView):
 		if header is not None:
 			self.setHeader(header)
 
-		deleteLabel = 'Delete loan';
+		returnLabel = 'Return';
 		for row in data:
-			row['delete'] = deleteLabel
+			row['return'] = returnLabel
 
-		self.setItemDelegateForColumn(4, deleteButtonDelegate(self, deleteLabel))
+		self.setItemDelegateForColumn(4, returnButtonDelegate(self, returnLabel))
 
 		# set the table model
 		tm = tableModel(data, self._header, self._parent)
@@ -378,7 +381,7 @@ class menu(QtGui.QMenuBar):
 		loansMenu.addAction(saveLoansAction)
 
 
-class deleteButtonDelegate(QtGui.QItemDelegate):
+class returnButtonDelegate(QtGui.QItemDelegate):
 	"""
 	Class to create a button to be used in the table.
 	"""
@@ -413,22 +416,21 @@ class deleteButtonDelegate(QtGui.QItemDelegate):
 		return QtGui.QPushButton(
 			self.label,
 			self.parent(),
-			clicked=self.deleteButtonClicked
+			clicked=self.returnButtonClicked
 		)
 
-	def deleteButtonClicked(self, row):
+	def returnButtonClicked(self, row):
 		"""
 		Action to execute when the button is pressed.
-		It'll ask a confirmation to the user to delete the corresponding row.
+		It'll ask a confirmation to the user to return the corresponding row.
 		"""
 		if QtGui.QMessageBox.warning(
 				self.parent(),
 				"Delete loan",
-				"Are you sure you want to delete "
-				"this loan ?",
+				"Did you get back this item ?",
 				"Yes", "No", '',
 				1, 1) == 0:
-			application.getInstance().deleteRow(self.parent().getData(self.index.row(), 0))
+			application.getInstance().returnRow(self.parent().getData(self.index.row(), 0))
 
 
 class addLoan(QtGui.QWidget):
