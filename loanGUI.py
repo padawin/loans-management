@@ -189,7 +189,7 @@ class mainWindow(QtGui.QMainWindow):
 				try:
 					row[k] = row[k].encode('utf-8')
 				except:
-					row[k] = str(row[k])
+					row[k] = '' if row[k] is None else str(row[k])
 			csvData.append(row)
 
 		writer = csv.DictWriter(open(fileName, "wb"), row.keys())
