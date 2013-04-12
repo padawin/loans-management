@@ -4,7 +4,10 @@ import Model
 
 
 class loan:
-	pass
+	@staticmethod
+	def returnLoan(id):
+		import datetime
+		model.update({'date_return': datetime.date.today()}, ('id_loan = ?', [id]))
 
 
 class model(Model.Model):
