@@ -74,7 +74,7 @@ class application(QtGui.QApplication):
 		self.refreshData()
 
 	def refreshData(self):
-		self.data = loan.model.loadAll()
+		self.data = loan.model.loadUnreturned()
 		self.widget.table.setData(self.data)
 
 
