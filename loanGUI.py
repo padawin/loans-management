@@ -303,7 +303,7 @@ class table(QtGui.QTableView):
 		for row in data:
 			row['return'] = returnLabel
 
-		self.setItemDelegateForColumn(4, returnButtonDelegate(self, returnLabel))
+		self.setItemDelegateForColumn(5, returnButtonDelegate(self, returnLabel))
 
 		# set the table model
 		tm = tableModel(data, self._header, self._parent)
@@ -398,7 +398,7 @@ class returnButtonDelegate(QtGui.QItemDelegate):
 		Displays the button in the good cell.
 		"""
 		self.index = index
-		button = self._getButton(self.parent().getData(index.row(), 4))
+		button = self._getButton(self.parent().getData(index.row(), 5))
 
 		if not self.parent().indexWidget(index):
 			self.parent().setIndexWidget(index, button)
