@@ -59,8 +59,7 @@ class application(QtGui.QApplication):
 		@param idRow integer id of the row to delete
 		"""
 		loan.model.delete(('id_loan = ?', [idRow]))
-		self.data = loan.model.loadAll()
-		self.widget.table.setData(self.data)
+		self.refreshData()
 
 	def addRows(self, data):
 		"""
@@ -72,6 +71,9 @@ class application(QtGui.QApplication):
 		"""
 		for r in data:
 			loan.model.insert(r)
+		self.refreshData()
+
+	def refreshData(self):
 		self.data = loan.model.loadAll()
 		self.widget.table.setData(self.data)
 
