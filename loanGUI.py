@@ -147,7 +147,7 @@ class mainWindow(QtGui.QMainWindow):
 		vbox.addWidget(self.table)
 		newLoanFieldButton = QtGui.QPushButton('Add Loan')
 		#button event
-		newLoanFieldButton.clicked.connect(self._addNewLoan)
+		newLoanFieldButton.clicked.connect(self.addNewLoan)
 		vbox.addWidget(newLoanFieldButton)
 
 		self.setCentralWidget(centralWidget)
@@ -167,12 +167,12 @@ class mainWindow(QtGui.QMainWindow):
 		#~ self.setWidth()
 		self.setWindowTitle('My loans')
 
-	def _addNewLoan(self):
+	def addNewLoan(self):
 		if self.addWidget is None:
 			self.addWidget = addLoan(self._app)
 		self.addWidget.show()
 
-	def _saveLoans(self):
+	def saveLoans(self):
 		"""
 		Save the existing loans in a csv file, for backup purposes.
 		"""
@@ -366,12 +366,12 @@ class menu(QtGui.QMenuBar):
 		newLoanAction = QtGui.QAction(QtGui.QIcon(config.icons['app']), '&Create new loan', window)
 		newLoanAction.setStatusTip('Create new loan')
 		newLoanAction.setShortcut('Ctrl+N')
-		newLoanAction.triggered.connect(window._addNewLoan)
+		newLoanAction.triggered.connect(window.addNewLoan)
 		#save loans action
 		saveLoansAction = QtGui.QAction(QtGui.QIcon(config.icons['app']), '&Save loans', window)
 		saveLoansAction.setStatusTip('Save loans to CSV')
 		saveLoansAction.setShortcut('Ctrl+S')
-		saveLoansAction.triggered.connect(window._saveLoans)
+		saveLoansAction.triggered.connect(window.saveLoans)
 
 		fileMenu = self.addMenu('&File')
 		fileMenu.addAction(exitAction)
