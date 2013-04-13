@@ -299,14 +299,18 @@ class table(QtGui.QTableView):
 		if header is not None:
 			self.setHeader(header)
 
+		import copy
+		d = copy.copy(data)
 		returnLabel = 'Return';
-		for row in data:
+		for key, row in enumerate(d):
+			row = {k: row[k] for k in loan.loan.tableFields}
 			row['return'] = returnLabel
+			d[key] = row
 
-		self.setItemDelegateForColumn(5, returnButtonDelegate(self, returnLabel))
+		self.setItemDelegateForColumn(4, returnButtonDelegate(self, returnLabel))
 
 		# set the table model
-		tm = tableModel(data, self._header, self._parent)
+		tm = tableModel(d, self._header, self._parent)
 		self.setModel(tm)
 		self.model().sort(self._parent._orderCol, self._parent._orderWay)
 		# hide vertical header
