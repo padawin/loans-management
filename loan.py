@@ -26,3 +26,7 @@ class loan:
 	def returnLoan(id):
 		import datetime
 		model.update({'date_return': datetime.date.today()}, ('id_loan = ?', [id]))
+
+	@staticmethod
+	def getPeople():
+		return [p['lent_to'] for p in model.loadAll(['lent_to'])]
