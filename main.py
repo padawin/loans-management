@@ -15,7 +15,7 @@ def main(argv):
 	created.
 	"""
 	l = loan.model.loadUnreturned()
-	lApp = loanGUI.application(l, loan.model.fields)
+	lApp = loanGUI.application(l, loan.loan.tableFields)
 	sys.exit(lApp.run())
 
 

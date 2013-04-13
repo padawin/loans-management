@@ -299,14 +299,18 @@ class table(QtGui.QTableView):
 		if header is not None:
 			self.setHeader(header)
 
+		import copy
+		d = copy.copy(data)
 		returnLabel = 'Return';
-		for row in data:
+		for key, row in enumerate(d):
+			row = {k: row[k] for k in loan.loan.tableFields}
 			row['return'] = returnLabel
+			d[key] = row
 
-		self.setItemDelegateForColumn(5, returnButtonDelegate(self, returnLabel))
+		self.setItemDelegateForColumn(4, returnButtonDelegate(self, returnLabel, 4))
 
 		# set the table model
-		tm = tableModel(data, self._header, self._parent)
+		tm = tableModel(d, self._header, self._parent)
 		self.setModel(tm)
 		self.model().sort(self._parent._orderCol, self._parent._orderWay)
 		# hide vertical header
@@ -386,19 +390,20 @@ class returnButtonDelegate(QtGui.QItemDelegate):
 	Class to create a button to be used in the table.
 	"""
 
-	def __init__(self, parent, label):
+	def __init__(self, parent, label, columnIndex):
 		"""
 		Construct, set the button's label.
 		"""
 		QtGui.QItemDelegate.__init__(self, parent)
 		self.label = label
+		self.columnIndex = columnIndex
 
 	def paint(self, painter, option, index):
 		"""
 		Displays the button in the good cell.
 		"""
 		self.index = index
-		button = self._getButton(self.parent().getData(index.row(), 5))
+		button = self._getButton(self.parent().getData(index.row(), self.columnIndex))
 
 		if not self.parent().indexWidget(index):
 			self.parent().setIndexWidget(index, button)
