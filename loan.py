@@ -19,6 +19,7 @@ class model(Model.Model):
 
 
 class loan:
+	tableFields = [item for item in model.fields if item not in ['date_return']]
 	exportFields = [item for item in model.fields if item != 'id_loan']
 
 	@staticmethod
