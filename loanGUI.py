@@ -478,6 +478,7 @@ class addLoan(QtGui.QWidget):
 		self.whoField = QtGui.QLineEdit()
 		self.whoErrorLabel = QtGui.QLabel()
 		self.whoErrorLabel.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+		self.updateCompleter()
 
 		whatLabel = QtGui.QLabel('What ?')
 		self.whatField = QtGui.QTextEdit()
@@ -544,6 +545,7 @@ class addLoan(QtGui.QWidget):
 
 		if self.handleErrors({'who': who, 'what': what}):
 			self._app.addRows(data)
+			self.updateCompleter()
 			self.closeWindow()
 
 	def handleErrors(self, fields):
@@ -588,3 +590,13 @@ class addLoan(QtGui.QWidget):
 		self.whoErrorLabel.clear()
 		self.whatErrorLabel.clear()
 		self.close()
+
+	def updateCompleter(self):
+		completerList = QtCore.QStringList()
+		for i in loan.loan.getPeople():
+			completerList.append(QtCore.QString(i))
+		lineEditCompleter = QtGui.QCompleter(completerList)
+		lineEditCompleter.setCompletionMode(QtGui.QCompleter.InlineCompletion)
+		lineEditCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+
+		self.whoField.setCompleter(lineEditCompleter)
