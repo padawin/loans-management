@@ -2,6 +2,8 @@
 
 A simple application to manage the things you lend to people
 
+![alt text](screenshot.png "Loans manager")
+
 ## Requirements
 
 You'll need the following packages to run the game:
